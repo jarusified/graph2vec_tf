@@ -26,25 +26,25 @@ class Corpus(object):
         subgraphs = []
         for fname in self.graph_fname_list:
             subgraphs.extend(
-                [l.split()[0] for l in open(fname).xreadlines()])  # just take the first word of every sentence
+                [l.split()[0] for l in open(fname).readlines()])  # just take the first word of every sentence
         subgraphs.append('UNK')
 
         subgraph_to_freq_map = Counter(subgraphs)
         del subgraphs
 
         subgraph_to_id_map = {sg: i for i, sg in
-                              enumerate(subgraph_to_freq_map.iterkeys())}  # output layer of the skipgram network
+                              enumerate(subgraph_to_freq_map.keys())}  # output layer of the skipgram network
 
         self._subgraph_to_freq_map = subgraph_to_freq_map  # to be used for negative sampling
         self._subgraph_to_id_map = subgraph_to_id_map
-        self._id_to_subgraph_map = {v:k for k,v in subgraph_to_id_map.iteritems()}
+        self._id_to_subgraph_map = {v:k for k,v in subgraph_to_id_map.items()}
         self._subgraphcount = sum(subgraph_to_freq_map.values()) #total num subgraphs in all graphs
 
         self.num_graphs = len(self.graph_fname_list) #doc size
         self.num_subgraphs = len(subgraph_to_id_map) #vocab of word size
 
         self.subgraph_id_freq_map_as_list = [] #id of this list is the word id and value is the freq of word with corresponding word id
-        for i in xrange(len(self._subgraph_to_freq_map)):
+        for i in range(len(self._subgraph_to_freq_map)):
             self.subgraph_id_freq_map_as_list.append(self._subgraph_to_freq_map[self._id_to_subgraph_map[i]])
 
         return self._subgraph_to_id_map
@@ -55,14 +55,14 @@ class Corpus(object):
         self.graph_fname_list = get_files(self.corpus_folder, extn=self.extn, max_files=self.max_files)
         self._graph_name_to_id_map = {g: i for i, g in
                                       enumerate(self.graph_fname_list)}  # input layer of the skipgram network
-        self._id_to_graph_name_map = {i: g for g, i in self._graph_name_to_id_map.iteritems()}
+        self._id_to_graph_name_map = {i: g for g, i in iter(self._graph_name_to_id_map.items())}
         subgraph_to_id_map = self.scan_corpus()
 
         logging.info('number of graphs: %d' % self.num_graphs)
         logging.info('subgraph vocabulary size: %d' % self.num_subgraphs)
         logging.info('total number of subgraphs to be trained: %d' % self._subgraphcount)
 
-        self.graph_ids_for_batch_traversal = range(self.num_graphs)
+        self.graph_ids_for_batch_traversal = list(range(self.num_graphs))
         shuffle(self.graph_ids_for_batch_traversal)
 
     def generate_batch_from_file(self, batch_size):
@@ -80,6 +80,7 @@ class Corpus(object):
                 self.epoch_flag = True
             graph_name = self.graph_fname_list[self.graph_ids_for_batch_traversal[self.graph_index]]
             graph_contents = open(graph_name).readlines()
+            print(self.subgraph_index, len(graph_contents))
 
         while len(context_subgraph_ids) < batch_size:
             line_id = self.subgraph_index

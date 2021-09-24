@@ -1,0 +1,6 @@
+nltk
+psutil
+numpy
+tensorflow
+sklearn
+networkx

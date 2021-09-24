@@ -33,4 +33,4 @@ def get_class_labels(graph_files, class_labels_fname):
     return labels
 
 if __name__ == '__main__':
-    print 'nothing to do'
+    print("nothing to do")

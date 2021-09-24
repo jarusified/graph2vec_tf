@@ -1,4 +1,7 @@
 import tensorflow as tf
+import tensorflow.compat.v1 as tf
+tf.disable_v2_behavior() 
+
 import math,logging
 from pprint import  pprint
 from time import time
@@ -79,7 +82,7 @@ class skipgram(object):
 
             loss = 0
 
-            for i in xrange(self.num_steps):
+            for i in range(self.num_steps):
                 t0 = time()
                 step = 0
                 while corpus.epoch_flag == False:

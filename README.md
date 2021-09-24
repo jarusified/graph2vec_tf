@@ -1,5 +1,10 @@
 # graph2vec
 
+To install required packages, use
+```
+pip install -r requirements.txt
+```
+
 This repository contains the "tensorflow" implementation of our paper "graph2vec: Learning distributed representations of graphs". 
 The paper could be found at: https://arxiv.org/pdf/1707.05005.pdf
 
